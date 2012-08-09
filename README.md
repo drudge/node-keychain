@@ -9,6 +9,19 @@
 ## Installation
 
     npm install keychain
+    
+## Example
+
+```javascript
+var keychain = require('keychain');
+
+keychain.setPassword({ account: 'foo', service: 'FooBar', password: 'baz' }, function(err) {
+  keychain.getPassword({ account: 'foo', service: 'FooBar' }, function(err, pass) {
+    console.log('Password is', pass);
+    // Prints: Password is baz
+  });
+});
+```
 
 ## Contributors
 
