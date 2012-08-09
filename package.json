@@ -1,0 +1,21 @@
+{
+  "name": "keychain",
+  "version": "0.0.1",
+  "description": "Basic access to the Mac OS X Keychain",
+  "main": "keychain.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:drudge/node-keychain.git"
+  },
+  "keywords": [
+    "osx",
+    "keychain",
+    "password",
+    "mac"
+  ],
+  "author": "Nicholas Penree",
+  "license": "MIT"
+}
