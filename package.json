@@ -1,10 +1,14 @@
 {
   "name": "keychain",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Basic access to the Mac OS X Keychain",
   "main": "keychain.js",
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
