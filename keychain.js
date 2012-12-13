@@ -16,7 +16,7 @@ var spawn = require('child_process').spawn;
  * @class KeychainAccess
  * @api public
  */
- 
+
 function KeychainAccess() {
   this.executablePath = '/usr/bin/security';
 }
@@ -28,7 +28,7 @@ function KeychainAccess() {
  * @param {Function} fn Callback
  * @api public
  */
- 
+
 KeychainAccess.prototype.getPassword = function(opts, fn) {
   opts = opts || {};
   var err;
@@ -45,10 +45,17 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ 'find-generic-password', '-a', opts.account, '-s', opts.service, '-w' ]);
+  var security = spawn(this.executablePath, [ 'find-generic-password', '-a', opts.account, '-s', opts.service, '-g' ]);
+  var keychain = '';
   var password = '';
 
   security.stdout.on('data', function(d) {
+    keychain += d.toString();
+  });
+
+  // For better or worse, the last line (containing the actual password) is actually written to stderr instead of stdout.
+  // Reference: http://blog.macromates.com/2006/keychain-access-from-shell/
+  security.stderr.on('data', function(d) {
     password += d.toString();
   });
 
@@ -59,8 +66,13 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
       return;
     }
 
-    password = password.replace('\n', '');
-    fn(null, password)
+    if (/password/.test(password)) {
+      password = password.match(/"(.*)\"/, '')[1];
+      fn(null, password);
+    } else {
+      err = new Error('Could not find password');
+      fn(err, null);
+    }
   });
 };
 
@@ -71,7 +83,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
  * @param {Function} fn Callback
  * @api public
  */
- 
+
 KeychainAccess.prototype.setPassword = function(opts, fn) {
   opts = opts || {};
   var err;
@@ -87,7 +99,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
     fn(err, null);
     return;
   }
-  
+
   if (!opts.password) {
     err = new Error('A password is required');
     fn(err, null);
@@ -96,11 +108,11 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
 
   var security = spawn(this.executablePath, [ 'add-generic-password', '-a', opts.account, '-s', opts.service, '-w', opts.password ]);
   var self = this;
-  
+
   security.on('exit', function(code, signal) {
     if (code !== 0) {
       var msg = 'Security returned a non-successful error code: ' + code;
-      
+
       if (code == 45) {
         self.deletePassword(opts, function(err) {
           if (err) {
@@ -108,17 +120,17 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
             fn(err);
             return;
           }
-          
+
           self.setPassword(opts, fn);
           return;
-        })
+        });
       } else {
        err = new Error(msg);
         fn(err);
         return;
       }
     } else {
-     fn(null); 
+     fn(null);
     }
   });
 };
@@ -155,12 +167,12 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
       fn(err);
       return;
     }
-    fn(null)
+    fn(null);
   });
 };
 
 /**
  * Expose new Keychain Access
  */
- 
+
 module.exports = new KeychainAccess();
