@@ -61,7 +61,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ './gkeyring.py', '-p', 'user='+opts.account+',key='+opts.service, '-1' ]);
+  var security = spawn(this.executablePath, [ __dirname+'/gkeyring.py', '-p', 'user='+opts.account+',key='+opts.service, '-1' ]);
   var keychain = '';
   var password = '';
 
@@ -103,7 +103,7 @@ KeychainAccess.prototype.getID = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ './gkeyring.py', '-p', 'user='+opts.account+',key='+opts.service, '--output=id' ]);
+  var security = spawn(this.executablePath, [ __dirname+'/gkeyring.py', '-p', 'user='+opts.account+',key='+opts.service, '--output=id' ]);
   var id = '';
 
   security.stdout.on('data', function(d) {
@@ -157,7 +157,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ './gkeyring.py', '--set', '-n', opts.service, '-p', 'user='+opts.account+',key='+opts.service, '-w', opts.password ]);
+  var security = spawn(this.executablePath, [ __dirname+'/gkeyring.py', '--set', '-n', opts.service, '-p', 'user='+opts.account+',key='+opts.service, '-w', opts.password ]);
   var self = this;
 
   security.on('exit', function(code, signal) {
@@ -215,7 +215,7 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
   var executablePath = this.executablePath;
   keychain.getID(opts, function(err, id) {
 	// console.log('got id: '+id)
-    var security = spawn(executablePath, [ './gkeyring.py', '--delete', '--id='+id ]);
+    var security = spawn(executablePath, [ __dirname+'/gkeyring.py', '--delete', '--id='+id ]);
 
     security.on('exit', function(code, signal) {
       if (code !== 0) {
