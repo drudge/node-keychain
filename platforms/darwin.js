@@ -29,7 +29,12 @@ function KeychainAccess() {
  */
 
 KeychainAccess.prototype.isSupported = function() {
-	return true;
+	var fs = require('fs');
+	if (fs.existsSync != undefined) {
+    	return fs.existsSync(this.executablePath);
+	} else {
+		return require('path').existsSync(this.executablePath);
+	}
 }
 
 /**

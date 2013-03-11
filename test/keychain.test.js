@@ -7,16 +7,7 @@ describe('KeychainAccess', function(){
   it('should be running on a supported platform', function(){
     keychain.isSupported().should.equal(true);
   })
-  
-  it('should have access to ' + keychain.executablePath, function(){
-	var fs = require('fs');
-	if (fs.existsSync != undefined) {
-    	fs.existsSync(keychain.executablePath).should.equal(true);
-	} else {
-		require('path').existsSync(keychain.executablePath).should.equal(true);
-	}
-  })
-  
+   
   describe('.setPassword(opts, fn)', function(){
     
     describe('when no account is given', function(){
@@ -56,7 +47,7 @@ describe('KeychainAccess', function(){
       })
     })
   })
-  
+ 
   describe('.getPassword(opts, fn)', function(){
     
     describe('when no account is given', function(){
@@ -100,7 +91,7 @@ describe('KeychainAccess', function(){
   })
   
   describe('.deletePassword(opts, fn)', function(){
-    
+
     describe('when no account is given', function(){
       it('should return an error', function(done){
         keychain.deletePassword({ password: 'baz', service: testService }, function(err) {
@@ -141,5 +132,5 @@ describe('KeychainAccess', function(){
     })
   
   });
-  
+ 
 });
