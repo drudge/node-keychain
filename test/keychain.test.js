@@ -1,16 +1,13 @@
-var keychain = require('../');
+var keychain = require('../keychain.js');
+var should = require('should');
 
 describe('KeychainAccess', function(){
   var testService = 'KeychainAccess#test#' + Date.now();
   
-  it('should be running on a mac', function(){
-    require('os').platform().should.equal('darwin');
+  it('should be running on a supported platform', function(){
+    keychain.isSupported().should.equal(true);
   })
-  
-  it('should have access to ' + keychain.executablePath, function(){
-    require('fs').existsSync(keychain.executablePath).should.equal(true);
-  })
-  
+   
   describe('.setPassword(opts, fn)', function(){
     
     describe('when no account is given', function(){
@@ -50,7 +47,7 @@ describe('KeychainAccess', function(){
       })
     })
   })
-  
+ 
   describe('.getPassword(opts, fn)', function(){
     
     describe('when no account is given', function(){
@@ -94,7 +91,7 @@ describe('KeychainAccess', function(){
   })
   
   describe('.deletePassword(opts, fn)', function(){
-    
+
     describe('when no account is given', function(){
       it('should return an error', function(done){
         keychain.deletePassword({ password: 'baz', service: testService }, function(err) {
@@ -124,7 +121,7 @@ describe('KeychainAccess', function(){
         });
       })
     })
-
+    
     describe('when sent the same options again', function(){
       it('should return an error', function(done){
         keychain.deletePassword({ account: "drudge", service: testService }, function(err) {
@@ -135,5 +132,5 @@ describe('KeychainAccess', function(){
     })
   
   });
-  
+ 
 });
