@@ -157,32 +157,21 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ __dirname+'/gkeyring.py', '--set', '-n', opts.service, '-p', 'user='+opts.account+',key='+opts.service, '-w', opts.password ]);
+  var executablePath = this.executablePath;
   var self = this;
-
-  security.on('exit', function(code, signal) {
-    if (code !== 0) {
-      var msg = 'Security returned a non-successful error code: ' + code;
-
-      if (code == 45) {
-        self.deletePassword(opts, function(err) {
-          if (err) {
-            console.log(err);
-            fn(err);
-            return;
-          }
-
-          self.setPassword(opts, fn);
-          return;
-        });
-      } else {
-       err = new Error(msg);
-        fn(err);
-        return;
-      }
-    } else {
-     fn(null);
-    }
+  this.deletePassword(opts, function(err) {
+	  var security = spawn(executablePath, [ __dirname+'/gkeyring.py', '--set', '-n', opts.service, '-p', 'user='+opts.account+',key='+opts.service, '-w', opts.password ]);
+	
+	  security.on('exit', function(code, signal) {
+	    if (code !== 0) {
+	      var msg = 'Security returned a non-successful error code: ' + code;
+	       err = new Error(msg);
+	       fn(err);
+	       return;
+	    } else {
+	     fn(null);
+	    }
+	  });	
   });
 };
 
