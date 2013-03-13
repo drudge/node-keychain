@@ -14,10 +14,10 @@ Handle<Value> add(const Arguments& args) {
 	String::AsciiValue asciipassword(args[2]);
 	
 	LPWSTR servicew = (LPWSTR) malloc(service.length()*sizeof(wchar_t));
-	mbstowcs(servicew, service.c_str(), service.length()+1);//Plus null
+	mbstowcs(servicew, service.c_str(), service.length());//Plus null
 
 	LPWSTR usernamew = (LPWSTR) malloc(username.length()*sizeof(wchar_t));
-	mbstowcs(usernamew, username.c_str(), username.length()+1);//Plus null
+	mbstowcs(usernamew, username.c_str(), username.length());//Plus null
 
     char* password = *asciipassword;
     DWORD cbCreds = 1 + strlen(password);
@@ -31,7 +31,7 @@ Handle<Value> add(const Arguments& args) {
 	cred.UserName = usernamew;
 
     BOOL ok = ::CredWriteW (&cred, 0);
-    // wprintf (L"CredWrite() - errno %d\n", ok ? 0 : ::GetLastError());
+    wprintf (L"CredWrite() - errno %d\n", ok ? 0 : ::GetLastError());
 	
 	free(servicew);
 	free(usernamew);
