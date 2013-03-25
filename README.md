@@ -1,4 +1,4 @@
-#  Basic Keychain Access on Mac computers running Node.js 
+#  Basic Keychain Access on Mac computers running Node.js
 
   This module adds methods for basic Keychain access in Node.js by way of the `security` command-line tool. **This is in-development and is not feature complete.**
 
@@ -9,8 +9,8 @@
 ## Installation
 
     npm install keychain
-    
-## Example
+
+## Generic Password Example
 
 ```javascript
 var keychain = require('keychain');
@@ -23,13 +23,26 @@ keychain.setPassword({ account: 'foo', service: 'FooBar', password: 'baz' }, fun
 });
 ```
 
+## Internet Password Example
+```javascript
+var keychain = require('keychain');
+
+keychain.setPassword({ account: 'foo', service: 'FooBar.com', type: 'internet', password: 'baz' }, function(err) {
+  keychain.getPassword({ account: 'foo', service: 'FooBar.com', type: 'internet' }, function(err, pass) {
+    console.log('Password is', pass);
+    // Prints: Password is baz
+  });
+});
+```
+
+
 ## Contributors
 
 The following are the major contributors of `node-keychain` (in no specific order).
 
   * Nicholas Penree ([drudge](http://github.com/drudge))
 
-## License 
+## License
 
 (The MIT License)
 

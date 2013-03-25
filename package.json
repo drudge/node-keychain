@@ -1,6 +1,6 @@
 {
   "name": "keychain",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Basic access to the Mac OS X Keychain",
   "main": "keychain.js",
   "devDependencies": {
