@@ -9,6 +9,7 @@
  */
 
 var spawn = require('child_process').spawn;
+var noop = function () {};
 
 /**
  * Basic Keychain Access on Mac computers running Node.js
@@ -32,6 +33,7 @@ function KeychainAccess() {
 KeychainAccess.prototype.getPassword = function(opts, fn) {
   opts = opts || {};
   opts.type = (opts.type || 'generic').toLowerCase();
+  fn = fn || noop;
   var err;
 
   if (!opts.account) {
@@ -88,6 +90,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
 KeychainAccess.prototype.setPassword = function(opts, fn) {
   opts = opts || {};
   opts.type = (opts.type || 'generic').toLowerCase();
+  fn = fn || noop;
   var err;
 
   if (!opts.account) {
@@ -148,6 +151,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
 KeychainAccess.prototype.deletePassword = function(opts, fn) {
   opts = opts || {};
   opts.type = (opts.type || 'generic').toLowerCase();
+  fn = fn || noop;
   var err;
 
   if (!opts.account) {
