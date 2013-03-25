@@ -31,6 +31,7 @@ function KeychainAccess() {
 
 KeychainAccess.prototype.getPassword = function(opts, fn) {
   opts = opts || {};
+  opts.type = (opts.type || 'generic').toLowerCase();
   var err;
 
   if (!opts.account) {
@@ -45,7 +46,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ 'find-generic-password', '-a', opts.account, '-s', opts.service, '-g' ]);
+  var security = spawn(this.executablePath, [ 'find-'+opts.type+'-password', '-a', opts.account, '-s', opts.service, '-g' ]);
   var keychain = '';
   var password = '';
 
@@ -86,6 +87,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
 
 KeychainAccess.prototype.setPassword = function(opts, fn) {
   opts = opts || {};
+  opts.type = (opts.type || 'generic').toLowerCase();
   var err;
 
   if (!opts.account) {
@@ -106,7 +108,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ 'add-generic-password', '-a', opts.account, '-s', opts.service, '-w', opts.password ]);
+  var security = spawn(this.executablePath, [ 'add-'+opts.type+'-password', '-a', opts.account, '-s', opts.service, '-w', opts.password ]);
   var self = this;
 
   security.on('exit', function(code, signal) {
@@ -145,6 +147,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
 
 KeychainAccess.prototype.deletePassword = function(opts, fn) {
   opts = opts || {};
+  opts.type = (opts.type || 'generic').toLowerCase();
   var err;
 
   if (!opts.account) {
@@ -159,7 +162,7 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
     return;
   }
 
-  var security = spawn(this.executablePath, [ 'delete-generic-password', '-a', opts.account, '-s', opts.service ]);
+  var security = spawn(this.executablePath, [ 'delete-'+opts.type+'-password', '-a', opts.account, '-s', opts.service ]);
 
   security.on('exit', function(code, signal) {
     if (code !== 0) {
