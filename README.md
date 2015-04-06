@@ -1,4 +1,5 @@
-#  Basic Keychain Access on Mac computers running Node.js
+#  Basic Keychain Access on Mac computers running Node.js 
+[![Build Status](https://travis-ci.org/drudge/node-keychain.svg)](https://travis-ci.org/drudge/node-keychain)
 
   This module adds methods for basic Keychain access in Node.js by way of the `security` command-line tool.
 
