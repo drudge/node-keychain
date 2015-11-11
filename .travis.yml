@@ -1,14 +1,25 @@
-language: node_js
-os:
-  - osx
-node_js:
-  - '5.0'
-  - '4.2'
-  - '4.1'
-  - '4.0'
-  - '0.12'
-  - '0.11'
-  - '0.10'
-  - '0.8'
-  - '0.6'
-  - 'iojs'
+os: osx
+sudo: false
+language: cpp
+env:
+  matrix:
+    - TRAVIS_NODE_VERSION="0.6"
+    - TRAVIS_NODE_VERSION="0.8"
+    - TRAVIS_NODE_VERSION="0.10"
+    - TRAVIS_NODE_VERSION="0.12"
+    - TRAVIS_NODE_VERSION="2"
+    - TRAVIS_NODE_VERSION="4"
+    - TRAVIS_NODE_VERSION="5"
+
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - PATH="`npm bin`:`npm bin -g`:$PATH"
+  # Install dependencies and build
+  - npm install
+
+script:
+  # Output useful info for debugging
+  - node --version
+  - npm --version
+  # Run tests
+  - npm test
