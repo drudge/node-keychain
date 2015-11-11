@@ -3,7 +3,6 @@ sudo: false
 language: cpp
 env:
   matrix:
-    - TRAVIS_NODE_VERSION="0.6"
     - TRAVIS_NODE_VERSION="0.8"
     - TRAVIS_NODE_VERSION="0.10"
     - TRAVIS_NODE_VERSION="0.12"
