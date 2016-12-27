@@ -51,6 +51,12 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
   var security = spawn(this.executablePath, [ 'find-'+opts.type+'-password', '-a', opts.account, '-s', opts.service, '-g' ]);
   var keychain = '';
   var password = '';
+  
+  security.on('error', function (err) {
+    err = new Error('Keychain failed to start child process: ' + this.executablePath);
+    fn(err, null);
+    return;
+  });
 
   security.stdout.on('data', function(d) {
     keychain += d.toString();
