@@ -51,8 +51,8 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
   var security = spawn(this.executablePath, [ 'find-'+opts.type+'-password', '-a', opts.account, '-s', opts.service, '-g' ]);
   var keychain = '';
   var password = '';
-  
-  security.on('error', function (err) {
+
+  security.on('error', function(err) {
     err = new Error('Keychain failed to start child process: ' + this.executablePath);
     fn(err, null);
     return;
@@ -120,6 +120,12 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
   var security = spawn(this.executablePath, [ 'add-'+opts.type+'-password', '-a', opts.account, '-s', opts.service, '-w', opts.password ]);
   var self = this;
 
+  security.on('error', function(err) {
+    err = new Error('Keychain failed to start child process: ' + this.executablePath);
+    fn(err, null);
+    return;
+  });
+
   security.on('close', function(code, signal) {
     if (code !== 0) {
       var msg = 'Security returned a non-successful error code: ' + code;
@@ -173,6 +179,12 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
   }
 
   var security = spawn(this.executablePath, [ 'delete-'+opts.type+'-password', '-a', opts.account, '-s', opts.service ]);
+
+  security.on('error', function (err) {
+    err = new Error('Keychain failed to start child process: ' + this.executablePath);
+    fn(err, null);
+    return;
+  });
 
   security.on('close', function(code, signal) {
     if (code !== 0) {
