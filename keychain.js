@@ -36,6 +36,12 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
   fn = fn || noop;
   var err;
 
+  if (process.platform !== 'darwin') {
+    err = new Error('Expected darwin platform, got ' + process.platform);
+    fn(err, null);
+    return;
+  }
+
   if (!opts.account) {
     err = new Error('An account is required');
     fn(err, null);
@@ -53,7 +59,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
   var password = '';
 
   security.on('error', function(err) {
-    err = new Error('Keychain failed to start child process: ' + this.executablePath);
+    err.message = 'Keychain failed to start child process: ' + err.message;
     fn(err, null);
     return;
   });
@@ -99,6 +105,12 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
   fn = fn || noop;
   var err;
 
+  if (process.platform !== 'darwin') {
+    err = new Error('Expected darwin platform, got ' + process.platform);
+    fn(err, null);
+    return;
+  }
+
   if (!opts.account) {
     err = new Error('An account is required');
     fn(err, null);
@@ -121,7 +133,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
   var self = this;
 
   security.on('error', function(err) {
-    err = new Error('Keychain failed to start child process: ' + this.executablePath);
+    err.message = 'Keychain failed to start child process: ' + err.message;
     fn(err, null);
     return;
   });
@@ -166,6 +178,12 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
   fn = fn || noop;
   var err;
 
+  if (process.platform !== 'darwin') {
+    err = new Error('Expected darwin platform, got ' + process.platform);
+    fn(err, null);
+    return;
+  }
+
   if (!opts.account) {
     err = new Error('An account is required');
     fn(err, null);
@@ -180,8 +198,8 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
 
   var security = spawn(this.executablePath, [ 'delete-'+opts.type+'-password', '-a', opts.account, '-s', opts.service ]);
 
-  security.on('error', function (err) {
-    err = new Error('Keychain failed to start child process: ' + this.executablePath);
+  security.on('error', function(err) {
+    err.message = 'Keychain failed to start child process: ' + err.message;
     fn(err, null);
     return;
   });
