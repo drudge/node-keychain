@@ -159,7 +159,7 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
         return;
       }
     } else {
-     fn(null);
+     fn(null, opts.password);
     }
   });
 };
