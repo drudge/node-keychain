@@ -5,6 +5,8 @@ describe('KeychainAccess', function(){
   var testInternetService = 'KeychainAccess' + Date.now() + '.com';
 
   var asciiPW = "test";
+  var mixedPW = "∆elta";
+  var unicodePW = "∆˚ˆ©ƒ®∂çµ˚¬˙ƒ®†¥";
 
   it('should be running on a mac', function(){
     require('os').platform().should.equal('darwin');
@@ -63,19 +65,21 @@ describe('KeychainAccess', function(){
       });
     });
 
-    describe('when sent { account: "drudge", password: "test", service: "' + testInternetService + '", type:"internet" }', function(){
-      it('should return "test"', function(done){
-        keychain.setPassword({ account: "drudge", password: "test", service: testInternetService, type:"internet" }, function(err) {
+    describe('when sent { account: "unicodeAccount", password: "' + unicodePW + '", service: "' + testService + '" }', function(){
+      it('should return "' + unicodePW, function(done){
+        keychain.setPassword({ account: "unicodeAccount", password: unicodePW, service: testService }, function(err, pass) {
           if (err) throw err;
+          pass.should.equal(unicodePW);
           done();
         });
       });
     });
 
-    describe('when sent { account: "drudge", password: "test", service: "' + testInternetService + '", type:"internet" }', function(){
-      it('should return "test"', function(done){
-        keychain.setPassword({ account: "drudge", password: "test", service: testInternetService, type:"internet" }, function(err) {
+    describe('when sent { account: "mixedAccount", password: "' + mixedPW + '", service: "' + testService + '" }', function(){
+      it('should return "' + mixedPW, function(done){
+        keychain.setPassword({ account: "mixedAccount", password: mixedPW, service: testService }, function(err, pass) {
           if (err) throw err;
+          pass.should.equal(mixedPW);
           done();
         });
       });
@@ -142,6 +146,27 @@ describe('KeychainAccess', function(){
       });
     });
 
+    describe('when sent { account: "unicodeAccount", service: "' + testService +'" }', function(){
+      it('should return ' + unicodePW, function(done){
+        keychain.getPassword({ account: "unicodeAccount", service: testService }, function(err, pass) {
+          if (err) throw err;
+
+          pass.should.equal(unicodePW);
+          done();
+        });
+      });
+    });
+
+    describe('when sent { account: "mixedAccount", service: "' + testService +'" }', function(){
+      it('should return ' + mixedPW, function(done){
+        keychain.getPassword({ account: "mixedAccount", service: testService }, function(err, pass) {
+          if (err) throw err;
+
+          pass.should.equal(mixedPW);
+          done();
+        });
+      });
+    });
   });
 
   describe('.deletePassword(opts, fn)', function(){

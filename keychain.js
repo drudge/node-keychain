@@ -11,6 +11,18 @@
 var spawn = require('child_process').spawn;
 var noop = function () {};
 
+// Polyfill Buffer.from for Node < 4 that didn't have a #from method
+if (!Buffer.from) {
+  Buffer.from = function (data, encoding, len) {
+    return new Buffer(data, encoding, len);
+  };
+}
+// Between Node >=4 to < 4.5 Buffer.from was inherited from Uint8Array
+// And behaved differently, it was backported in 4.5.
+if (Buffer.from === Uint8Array.from) {
+  throw new Error('Node >= 4.0.0 to < 4.5.0 are unsupported')
+}
+
 /**
  * Basic Keychain Access on Mac computers running Node.js
  *
@@ -82,9 +94,28 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
     }
 
     if (/password/.test(password)) {
-      password = password.match(/"(.*)\"/, '')[1];
-      fn(null, password);
-    } else {
+      // When keychain escapes a char into octal it also includes a hex
+      // encoded version.
+      //
+      // e.g. password 'passWith\' becomes:
+      // password: 0x70617373576974685C  "passWith\134"
+      //
+      // And if the password does not contain ASCII it leaves out the quoted
+      // version altogether:
+      //
+      // e.g. password '∆˚ˆ©ƒ®∂çµ˚¬˙ƒ®†¥' becomes:
+      // password: 0xE28886CB9ACB86C2A9C692C2AEE28882C3A7C2B5CB9AC2ACCB99C692C2AEE280A0C2A5
+      if (/0x([0-9a-fA-F]+)/.test(password)) {
+        var hexPassword = password.match(/0x([0-9a-fA-F]+)/, '')[1];
+        fn(null, Buffer.from(hexPassword, 'hex').toString());
+      }
+      // Otherwise the password will be in quotes:
+      // password: "passWithoutSlash"
+      else {
+        fn(null, password.match(/"(.*)\"/, '')[1]);
+      }
+    }
+    else {
       err = new Error('Could not find password');
       fn(err, null);
     }
