@@ -11,7 +11,9 @@
 
     npm install keychain
 
-## Generic Password Example
+## Examples
+
+### Generic Password Example
 
 ```javascript
 var keychain = require('keychain');
@@ -24,7 +26,7 @@ keychain.setPassword({ account: 'foo', service: 'FooBar', password: 'baz' }, fun
 });
 ```
 
-## Internet Password Example
+### Internet Password Example
 ```javascript
 var keychain = require('keychain');
 
@@ -36,13 +38,33 @@ keychain.setPassword({ account: 'foo', service: 'FooBar.com', type: 'internet', 
 });
 ```
 
+## Usage
+
+The available 
+```js
+keychain.setPassword(options[, callback]);
+keychain.getPassword(options, callback);
+keychain.deletePassword(options[, callback]);
+```
+
+### Options
+
+Available params you can pass to the options object:
+
+| Param | Description |
+| ----- | ----------- |
+| `account` | Specify account name (required) |
+| `service` | Specify service name (required) |
+| `password` | Specify password to be added (required for `setPassword`) |
+| `type` | The type of password to get or save. Supported values are `generic` and `internet`. See [docs](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/security.1.html). Default: `generic` |
 
 ## Contributors
 
 The following are the major contributors of `node-keychain` (in no specific order).
 
-  * Nicholas Penree ([drudge](http://github.com/drudge))
-  * Tejesh Mehta ([tjmehta](http://github.com/tjmehta))
+  * Nicholas Penree ([drudge](https://github.com/drudge))
+  * Tejesh Mehta ([tjmehta](https://github.com/tjmehta))
+  * Benjamin Hutchins ([benhutchins](https://github.com/benhutchins))
 
 ## License
 
