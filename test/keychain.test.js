@@ -121,6 +121,7 @@ describe('KeychainAccess', function(){
       it('should return an error', function(done){
         keychain.getPassword({ account: "asciiAccount", service: testService + '#NOTEXIST' }, function(err, pass) {
           err.should.be.instanceOf(Error).and.have.property('message', 'Could not find password');
+          err.should.be.instanceOf(keychain.constructor.errors.PasswordNotFoundError).and.have.property('code', 'PasswordNotFound');
           done();
         });
       });
