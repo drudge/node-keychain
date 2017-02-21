@@ -245,7 +245,9 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
 };
 
 function errorClass(code, defaultMsg) {
+  var errorType = code + 'Error';
   var ErrorClass = function (msg, append) {
+    this.type = errorType;
     this.code = code;
     this.message = (msg || defaultMsg) + (append || '');
     this.stack = (new Error()).stack;
@@ -253,7 +255,7 @@ function errorClass(code, defaultMsg) {
 
   ErrorClass.prototype = Object.create(Error.prototype);
   ErrorClass.prototype.constructor = ErrorClass;
-  KeychainAccess.errors[code + 'Error'] = ErrorClass
+  KeychainAccess.errors[errorType] = ErrorClass
 }
 
 KeychainAccess.errors = {};
