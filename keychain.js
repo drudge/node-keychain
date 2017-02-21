@@ -49,19 +49,19 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
   var err;
 
   if (process.platform !== 'darwin') {
-    err = new Error('Expected darwin platform, got ' + process.platform);
+    err = new KeychainAccess.errors.UnsupportedPlatformError(null, process.platform);
     fn(err, null);
     return;
   }
 
   if (!opts.account) {
-    err = new Error('An account is required');
+    err = new KeychainAccess.errors.NoAccountProvidedError();
     fn(err, null);
     return;
   }
 
   if (!opts.service) {
-    err = new Error('A service is required');
+    err = new KeychainAccess.errors.NoServiceProvidedError();
     fn(err, null);
     return;
   }
@@ -71,7 +71,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
   var password = '';
 
   security.on('error', function(err) {
-    err.message = 'Keychain failed to start child process: ' + err.message;
+    err = new KeychainAccess.errors.ServiceFailureError(null, err.message);
     fn(err, null);
     return;
   });
@@ -88,7 +88,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
 
   security.on('close', function(code, signal) {
     if (code !== 0) {
-      err = new Error('Could not find password');
+      err = new KeychainAccess.errors.PasswordNotFoundError();
       fn(err, null);
       return;
     }
@@ -116,7 +116,7 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
       }
     }
     else {
-      err = new Error('Could not find password');
+      err = new KeychainAccess.errors.PasswordNotFoundError();
       fn(err, null);
     }
   });
@@ -137,25 +137,25 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
   var err;
 
   if (process.platform !== 'darwin') {
-    err = new Error('Expected darwin platform, got ' + process.platform);
+    err = new KeychainAccess.errors.UnsupportedPlatformError(null, process.platform);
     fn(err, null);
     return;
   }
 
   if (!opts.account) {
-    err = new Error('An account is required');
+    err = new KeychainAccess.errors.NoAccountProvidedError();
     fn(err, null);
     return;
   }
 
   if (!opts.service) {
-    err = new Error('A service is required');
+    err = new KeychainAccess.errors.NoServiceProvidedError();
     fn(err, null);
     return;
   }
 
   if (!opts.password) {
-    err = new Error('A password is required');
+    err = new KeychainAccess.errors.NoPasswordProvidedError();
     fn(err, null);
     return;
   }
@@ -164,19 +164,16 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
   var self = this;
 
   security.on('error', function(err) {
-    err.message = 'Keychain failed to start child process: ' + err.message;
+    err = new KeychainAccess.errors.ServiceFailureError(null, err.message);
     fn(err, null);
     return;
   });
 
   security.on('close', function(code, signal) {
     if (code !== 0) {
-      var msg = 'Security returned a non-successful error code: ' + code;
-
       if (code == 45) {
         self.deletePassword(opts, function(err) {
           if (err) {
-            console.log(err);
             fn(err);
             return;
           }
@@ -185,12 +182,14 @@ KeychainAccess.prototype.setPassword = function(opts, fn) {
           return;
         });
       } else {
-       err = new Error(msg);
+        var msg = 'Security returned a non-successful error code: ' + code;
+        err = new KeychainAccess.errors.ServiceFailureError(msg);
+        err.exitCode = code;
         fn(err);
         return;
       }
     } else {
-     fn(null, opts.password);
+      fn(null, opts.password);
     }
   });
 };
@@ -210,19 +209,19 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
   var err;
 
   if (process.platform !== 'darwin') {
-    err = new Error('Expected darwin platform, got ' + process.platform);
+    err = new KeychainAccess.errors.UnsupportedPlatformError(null, process.platform);
     fn(err, null);
     return;
   }
 
   if (!opts.account) {
-    err = new Error('An account is required');
+    err = new KeychainAccess.errors.NoAccountProvidedError();
     fn(err, null);
     return;
   }
 
   if (!opts.service) {
-    err = new Error('A service is required');
+    err = new KeychainAccess.errors.NoServiceProvidedError();
     fn(err, null);
     return;
   }
@@ -230,20 +229,43 @@ KeychainAccess.prototype.deletePassword = function(opts, fn) {
   var security = spawn(this.executablePath, [ 'delete-'+opts.type+'-password', '-a', opts.account, '-s', opts.service ]);
 
   security.on('error', function(err) {
-    err.message = 'Keychain failed to start child process: ' + err.message;
+    err = new KeychainAccess.errors.ServiceFailureError(null, err.message);
     fn(err, null);
     return;
   });
 
   security.on('close', function(code, signal) {
     if (code !== 0) {
-      err = new Error('Could not find password');
+      err = new KeychainAccess.errors.PasswordNotFoundError();
       fn(err);
       return;
     }
     fn(null);
   });
 };
+
+function errorClass(code, defaultMsg) {
+  var errorType = code + 'Error';
+  var ErrorClass = function (msg, append) {
+    this.type = errorType;
+    this.code = code;
+    this.message = (msg || defaultMsg) + (append || '');
+    this.stack = (new Error()).stack;
+  };
+
+  ErrorClass.prototype = Object.create(Error.prototype);
+  ErrorClass.prototype.constructor = ErrorClass;
+  KeychainAccess.errors[errorType] = ErrorClass
+}
+
+KeychainAccess.errors = {};
+errorClass('UnsupportedPlatform', 'Expected darwin platform, got: ');
+errorClass('NoAccountProvided', 'An account is required');
+errorClass('NoServiceProvided', 'A service is required');
+errorClass('NoPasswordProvided', 'A password is required');
+errorClass('ServiceFailure', 'Keychain failed to start child process: ');
+errorClass('PasswordNotFound', 'Could not find password');
+
 
 /**
  * Expose new Keychain Access
