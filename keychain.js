@@ -105,7 +105,9 @@ KeychainAccess.prototype.getPassword = function(opts, fn) {
       //
       // e.g. password '∆˚ˆ©ƒ®∂çµ˚¬˙ƒ®†¥' becomes:
       // password: 0xE28886CB9ACB86C2A9C692C2AEE28882C3A7C2B5CB9AC2ACCB99C692C2AEE280A0C2A5
-      if (/0x([0-9a-fA-F]+)/.test(password)) {
+      // 
+      // But beware of when the password itself is a hex-encoded string; in that case it'll be surrounded in quotes
+      if (/[^"]0x([0-9a-fA-F]+)/.test(password)) {
         var hexPassword = password.match(/0x([0-9a-fA-F]+)/, '')[1];
         fn(null, Buffer.from(hexPassword, 'hex').toString());
       }
