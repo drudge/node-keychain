@@ -1,5 +1,5 @@
 #  Basic Keychain Access on Mac computers running Node.js
-[![Build Status](https://img.shields.io/github/actions/workflow/status/drudge/node-keychain/test.yml?branch=master)](https://github.com/drudge/node-keychain/actions/workflows/test.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/drudge/node-keychain/test.yaml?branch=master)](https://github.com/drudge/node-keychain/actions/workflows/test.yaml)
 
   This module adds methods for basic Keychain access in Node.js by way of the `security` command-line tool.
 
