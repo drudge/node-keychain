@@ -267,7 +267,6 @@ KeychainAccess.prototype.createKeychain = function(opts, fn) {
     return;
   }
 
-  //console.log(this.executablePath + " create-keychain -p " + opts.password + " " + opts.keychainName);
   var security = spawn(this.executablePath, [ 'create-keychain', '-p', opts.password, opts.keychainName]);
 
   security.on('error', function(err) {
