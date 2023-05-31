@@ -45,6 +45,8 @@ The available
 keychain.setPassword(options[, callback]);
 keychain.getPassword(options, callback);
 keychain.deletePassword(options[, callback]);
+keychain.createKeychain(options[, callback]);
+keychain.deleteKeychain(options[, callback]);
 ```
 
 ### Options
@@ -57,6 +59,7 @@ Available params you can pass to the options object:
 | `service` | Specify service name (required) |
 | `password` | Specify password to be added (required for `setPassword`) |
 | `type` | The type of password to get or save. Supported values are `generic` and `internet`. See [docs](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/security.1.html). Default: `generic` |
+| `keychainName` | Specify the name of the keychain (required for 'createKeychain' and 'deleteKeychain') |
 
 ## Contributors
 
