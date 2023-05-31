@@ -327,6 +327,44 @@ KeychainAccess.prototype.deleteKeychain = function(opts, fn) {
 
 };
 
+/**
+* Set the default keychain for the system.
+*
+* @param {Object} opts Object containing 'keychainName'
+* @param {Function} fn Callback
+* @api public
+*/
+KeychainAccess.prototype.setDefaultKeychain = function(opts, fn) {
+  opts = opts || {};
+  fn = fn || noop;
+
+  if (!opts.keychainName) {
+    err = new KeychainAccess.errors.NoKeychainNameProvidedError();
+    fn(err, null);
+    return;
+  }
+
+  var security = spawn(this.executablePath, [ 'default-keychain', '-s', opts.keychainName]);
+
+  security.on('error', function(err) {
+    err = new KeychainAccess.errors.ServiceFailureError(null, err.message);
+    fn(err, null);
+    return;
+  });
+
+  security.on('close', function(code, signal) {
+    if (code !== 0) {
+      var msg = 'Security returned a non-successful error code: ' + code;
+      err = new KeychainAccess.errors.ServiceFailureError(msg);
+      err.exitCode = code;
+      fn(err);
+      return;
+    } else {
+      fn(null, opts.keychainName);
+    }
+  });
+};
+
 function errorClass(code, defaultMsg) {
   var errorType = code + 'Error';
   var ErrorClass = function (msg, append) {

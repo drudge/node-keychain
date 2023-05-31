@@ -47,6 +47,7 @@ keychain.getPassword(options, callback);
 keychain.deletePassword(options[, callback]);
 keychain.createKeychain(options[, callback]);
 keychain.deleteKeychain(options[, callback]);
+keychain.setDefaultKeychain(options[, callback]);
 ```
 
 ### Options
