@@ -279,6 +279,56 @@ describe('KeychainAccess', function(){
 
   });
 
+  describe('.setDefaultKeychain(opts, fn)', function(){
+
+    describe('when no keychain name is given', function(){
+      it('should return an error', function(done){
+        keychain.setDefaultKeychain({ password: 'baz' }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when sent { keychainName: "' + keychainName + '"}', function(){
+      it('should return ' + keychainName, function(done){
+        keychain.setDefaultKeychain({ keychainName: keychainName }, function(err, name) {
+          if (err) throw err;
+
+          name.should.equal(keychainName);
+          done();
+        });
+      });
+    });
+
+    describe('when sent { keychainName: "missing"}', function(){
+      it('should return an error', function(done){
+        keychain.setDefaultKeychain({ keychainName: 'missing' }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when sent { keychainName: "login.keychain"}', function(){
+      it('should return ' + keychainName, function(done){
+        keychain.setDefaultKeychain({ keychainName: "login.keychain" }, function(err, name) {
+          if (err) throw err;
+
+          name.should.equal("login.keychain");
+          done();
+        });
+      });
+    });
+
+  });
+
   describe('.deleteKeychain(opts, fn)', function(){
 
     describe('when no keychain name is given', function(){
