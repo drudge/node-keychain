@@ -69,12 +69,13 @@ The following are the major contributors of `node-keychain` (in no specific orde
   * Nicholas Penree ([drudge](https://github.com/drudge))
   * Tejesh Mehta ([tjmehta](https://github.com/tjmehta))
   * Benjamin Hutchins ([benhutchins](https://github.com/benhutchins))
+  * Manuel de la Pena ([mandel-macaque](https://github.com/mandel-macaque))
 
 ## License
 
 (The MIT License)
 
-Copyright (c) 2013 Nicholas Penree &lt;nick@penree.com&gt;
+Copyright (c) 2013-2023 Nicholas Penree &lt;nick@penree.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

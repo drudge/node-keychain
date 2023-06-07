@@ -1,6 +1,6 @@
 /*!
  * node-keychain
- * Copyright(c) 2015 Nicholas Penree <nick@penree.com>
+ * Copyright(c) 2023 Nicholas Penree <nick@penree.com>
  * MIT Licensed
  */
 
