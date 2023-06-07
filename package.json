@@ -4,8 +4,8 @@
   "description": "Basic access to the Mac OS X Keychain",
   "main": "keychain.js",
   "devDependencies": {
-    "mocha": "7.2.0",
-    "should": "13.2.3"
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
   },
   "scripts": {
     "test": "mocha"

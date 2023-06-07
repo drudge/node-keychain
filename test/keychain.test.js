@@ -1,4 +1,7 @@
 var keychain = require('../');
+var chai = require('chai');
+
+chai.should();
 
 describe('KeychainAccess', function(){
   var testService = 'KeychainAccess#test#' + Date.now();
