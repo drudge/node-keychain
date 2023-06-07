@@ -10,6 +10,7 @@ describe('KeychainAccess', function(){
   var asciiPW = "test";
   var mixedPW = "∆elta";
   var unicodePW = "∆˚ˆ©ƒ®∂çµ˚¬˙ƒ®†¥";
+  var asciiComplexPW = "password: 0x4e6573746564";
   var keychainName = "test.keychain";
 
   it('should be running on a mac', function(){
@@ -74,6 +75,16 @@ describe('KeychainAccess', function(){
         keychain.setPassword({ account: "unicodeAccount", password: unicodePW, service: testService }, function(err, pass) {
           if (err) throw err;
           pass.should.equal(unicodePW);
+          done();
+        });
+      });
+    });
+
+    describe('when sent { account: "complexAccount", password: "' + asciiComplexPW + '", service: "' + testService + '" }', function(){
+      it('should return "' + asciiComplexPW, function(done){
+        keychain.setPassword({ account: "complexAccount", password: asciiComplexPW, service: testService }, function(err, pass) {
+          if (err) throw err;
+          pass.should.equal(asciiComplexPW);
           done();
         });
       });
@@ -157,6 +168,17 @@ describe('KeychainAccess', function(){
           if (err) throw err;
 
           pass.should.equal(unicodePW);
+          done();
+        });
+      });
+    });
+
+    describe('when sent { account: "complexAccount", service: "' + testService +'" }', function(){
+      it('should return ' + asciiComplexPW, function(done){
+        keychain.getPassword({ account: "complexAccount", service: testService }, function(err, pass) {
+          if (err) throw err;
+
+          pass.should.equal(asciiComplexPW);
           done();
         });
       });
