@@ -1,5 +1,5 @@
-#  Basic Keychain Access on Mac computers running Node.js 
-[![Build Status](https://travis-ci.org/drudge/node-keychain.svg)](https://travis-ci.org/drudge/node-keychain)
+#  Basic Keychain Access on Mac computers running Node.js
+[![Build Status](https://img.shields.io/github/actions/workflow/status/drudge/node-keychain/test.yaml?branch=master)](https://github.com/drudge/node-keychain/actions/workflows/test.yaml)
 
   This module adds methods for basic Keychain access in Node.js by way of the `security` command-line tool.
 
@@ -45,6 +45,9 @@ The available
 keychain.setPassword(options[, callback]);
 keychain.getPassword(options, callback);
 keychain.deletePassword(options[, callback]);
+keychain.createKeychain(options[, callback]);
+keychain.deleteKeychain(options[, callback]);
+keychain.setDefaultKeychain(options[, callback]);
 ```
 
 ### Options
@@ -57,6 +60,7 @@ Available params you can pass to the options object:
 | `service` | Specify service name (required) |
 | `password` | Specify password to be added (required for `setPassword`) |
 | `type` | The type of password to get or save. Supported values are `generic` and `internet`. See [docs](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/security.1.html). Default: `generic` |
+| `keychainName` | Specify the name of the keychain (required for 'createKeychain' and 'deleteKeychain') |
 
 ## Contributors
 

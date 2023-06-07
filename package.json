@@ -1,11 +1,11 @@
 {
   "name": "keychain",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Basic access to the Mac OS X Keychain",
   "main": "keychain.js",
   "devDependencies": {
-    "mocha": "*",
-    "should": "*"
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
   },
   "scripts": {
     "test": "mocha"

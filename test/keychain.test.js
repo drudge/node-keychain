@@ -1,4 +1,7 @@
 var keychain = require('../');
+var chai = require('chai');
+
+chai.should();
 
 describe('KeychainAccess', function(){
   var testService = 'KeychainAccess#test#' + Date.now();
@@ -8,6 +11,7 @@ describe('KeychainAccess', function(){
   var mixedPW = "∆elta";
   var unicodePW = "∆˚ˆ©ƒ®∂çµ˚¬˙ƒ®†¥";
   var asciiComplexPW = "password: 0x4e6573746564";
+  var keychainName = "test.keychain";
 
   it('should be running on a mac', function(){
     require('os').platform().should.equal('darwin');
@@ -251,6 +255,138 @@ describe('KeychainAccess', function(){
       });
     });
 
+  });
+
+  describe('.createKeychain(opts, fn)', function(){
+    describe('when no keychain name is given', function(){
+      it('should return an error', function(done){
+        keychain.createKeychain({ password: 'baz' }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when no password is given', function(){
+      it('should return an error', function(done){
+        keychain.createKeychain({ keychainName: keychainName }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when sent { keychainName: "' + keychainName + '", password: "' + asciiPW +'" }', function(){
+      it('should return ' + keychainName, function(done){
+        keychain.createKeychain({ keychainName: keychainName, password: asciiPW }, function(err, name) {
+          if (err) throw err;
+
+          name.should.equal(keychainName);
+          done();
+        });
+      });
+    });
+
+    describe('when sent the same options again', function(){
+      it('should return an error', function(done){
+        keychain.createKeychain({ keychainName: keychainName, password: asciiPW }, function(err) {
+          if (!err) throw new Error();
+          done();
+        });
+      });
+    });
+
+  });
+
+  describe('.setDefaultKeychain(opts, fn)', function(){
+
+    describe('when no keychain name is given', function(){
+      it('should return an error', function(done){
+        keychain.setDefaultKeychain({ password: 'baz' }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when sent { keychainName: "' + keychainName + '"}', function(){
+      it('should return ' + keychainName, function(done){
+        keychain.setDefaultKeychain({ keychainName: keychainName }, function(err, name) {
+          if (err) throw err;
+
+          name.should.equal(keychainName);
+          done();
+        });
+      });
+    });
+
+    describe('when sent { keychainName: "missing"}', function(){
+      it('should return an error', function(done){
+        keychain.setDefaultKeychain({ keychainName: 'missing' }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when sent { keychainName: "login.keychain"}', function(){
+      it('should return ' + keychainName, function(done){
+        keychain.setDefaultKeychain({ keychainName: "login.keychain" }, function(err, name) {
+          if (err) throw err;
+
+          name.should.equal("login.keychain");
+          done();
+        });
+      });
+    });
+
+  });
+
+  describe('.deleteKeychain(opts, fn)', function(){
+
+    describe('when no keychain name is given', function(){
+      it('should return an error', function(done){
+        keychain.deleteKeychain({ password: 'baz' }, function(err) {
+          if (err) {
+            done();
+            return;
+          }
+          done(new Error());
+        });
+      })
+    });
+
+    describe('when sent { keychainName: "' + keychainName + '"}', function(){
+      it('should return ' + keychainName, function(done){
+        keychain.deleteKeychain({ keychainName: keychainName }, function(err, name) {
+          if (err) throw err;
+
+          name.should.equal(keychainName);
+          done();
+        });
+      });
+    });
+
+    describe('when sent the same options again', function(){
+      it('should return an error', function(done){
+        keychain.deletePassword({ account: keychainName, password: asciiPW }, function(err) {
+          if (!err) throw new Error();
+          done();
+        });
+      });
+    });
   });
 
 });
